@@ -12,26 +12,31 @@ public:
     int lengthOfLongestSubstring(string s)
     {
         set<char> chars;
+        int startIdx = 0;
+        int endIdx = 0;
         int maxLength = 0;
-        int curLength = 0;
 
-        // O(n) approach
-        int strLength = s.size();
-        for (int i = 0; i < strLength; i++)
+        // O(n) approach:
+        // Expand end from start until we reach a duplicated character, then bring start towards end... like a slinky :)
+        int length = s.size();
+        while (startIdx < length && endIdx < length)
         {
-            char c = s[i];
+            char c = s[endIdx];
             if (chars.find(c) != chars.end())
             {
-                chars.clear();
-                maxLength = max(maxLength, curLength);
-                curLength = 0;
+                chars.erase(s[startIdx]);
+                startIdx++;
+            }
+            else
+            {
+                chars.insert(c);
+                endIdx++;
             }
 
-            curLength++;            
-            chars.insert(c);
+            maxLength = max(maxLength, endIdx - startIdx);
         }
 
-        return max(maxLength, curLength);
+        return maxLength;
     }
 };
 
@@ -46,4 +51,5 @@ TEST_CASE("LongestSubstring", "[tests]")
     REQUIRE(solution.lengthOfLongestSubstring("a") == 1);
     REQUIRE(solution.lengthOfLongestSubstring("ab") == 2);
     REQUIRE(solution.lengthOfLongestSubstring("abab") == 2);
+    REQUIRE(solution.lengthOfLongestSubstring("dvdf") == 3);
 }
